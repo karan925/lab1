@@ -45,12 +45,7 @@ handleSubmit(event) {
 
     event.preventDefault();
   };
-
-//   schema = {
-//     name: Joi.string().required().min(5).max(15).label("Name"),
-//     username: Joi.string().required().min(5).max(50).email().label("Username"),
-//     password: Joi.string().required().min(8).max(20).label("Password"),
-//   };
+  
   render() {
 
     return ( 
@@ -59,7 +54,7 @@ handleSubmit(event) {
         <div class="container">
             <br />
         <div>
-            <h1>Login</h1>
+            <h1>Register</h1>
         </div>
         <br/>
             <form onSubmit={this.handleSubmit}>

@@ -4,18 +4,21 @@ const cors = require("cors");
 const mysql = require("mysql");
 const path = require("path");
 const { Http2ServerResponse } = require("http2");
+const e = require("express");
 
 app.use(cors());
 // app.options('*', cors());
 
 app.use(express.json());
 
+
+
 //This will create a middleware.
 //When you navigate to the root page, it would use the built react-app
 if (process.env.NODE_ENV === "production"){
   app.use(express.static("client/build"));
-  app.get('*', (req, res) => {
-    req.sendFile(path.resolve(__dirname, 'build', 'index.html'));
+  app.get('*', function(req, res){
+    res.sendFile(path.resolve(__dirname, 'build', 'index.html'));
   })
 }
 
@@ -92,37 +95,47 @@ app.post('/register', (req, res) => {
     // Use the connection
     connection.query("INSERT INTO login_table (email, password, firstName, lastName) VALUES (?,?,?,?)", [email, password, firstName, lastName], function (error, results, fields) {
       // When done with the connection, release it.
-      connection.destroy()
+      connection.release()
   
       // Handle error after the release.
       if (error){
-        res.status(400).json({ error: "Email already exists" });
+        res.status(400).json({ error: error.message });
       }else{
       res.status(200).json("Success");
       }
       // Don't use the connection here, it has been returned to the pool.
     });
   });
-
-
-
-  // pool.query("INSERT INTO login_table (email, password, firstName, lastName) VALUES (?,?,?,?)", [email, password, firstName, lastName], (err, res) => {
-  //   if(err){
-  //     console.log("this is " + err);
-  //   }
-  // }
-  // );
 });
 
+app.post('/login', (req, res) => {
 
-// con.connect(function(err) {
-//   if (err) throw err;
-//   console.log("Connected!");
-//   con.query("CREATE DATABASE mydb", function (err, result) {
-//     if (err) throw err;
-//     console.log("Database created");
-//   });
-// });
+  const email = req.body.email;
+  const password = req.body.password;
+
+  console.log(email, password);
+
+  pool.getConnection(function(err, connection) {
+    if (err) throw err; // not connected!
+  
+    // Use the connection
+    connection.query("SELECT * FROM login_table WHERE email = ? AND password = ?", [email, password], function (error, results, fields) {
+      // When done with the connection, release it.
+      connection.release()
+  
+      // Handle error after the release.
+      if (error){
+        console.log(error)
+      }else if(results.length > 0){
+        // console.log(results)
+        res.status(200).send(results);
+      } else{
+      res.status(400).json({ error: error.message });
+      }
+      // Don't use the connection here, it has been returned to the pool.
+    });
+  });
+});
 
 
 app.listen(process.env.PORT || 5000, () => {
