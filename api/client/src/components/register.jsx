@@ -21,19 +21,22 @@ class Register extends Component {
             {/* <form action="http://127.0.0.1:3000/create" method="post"> */}
             <form onSubmit={this.handleSubmit}>
                 <div style={{width: '30%'}} class="form-group">
-                    <input  type="text" class="form-control" name="BookID" placeholder="Book ID" onChange={this.handleInputChange}/>
+                    <input  type="text" class="form-control" name="firstName" placeholder="First Name" onChange={this.handleInputChange}/>
                 </div>
                 <br/>
                 <div style={{width: '30%'}} class="form-group">
-                        <input  type="text" class="form-control" name="Title" placeholder="Book Title" onChange={this.handleInputChange}/>
+                        <input  type="text" class="form-control" name="lastName" placeholder="Last Name" onChange={this.handleInputChange}/>
                 </div>
                 <br/>
                 <div style={{width: '30%'}} class="form-group">
-                        <input  type="text" class="form-control" name="Author" placeholder="Book Author" onChange={this.handleInputChange}/>
+                        <input  type="email" class="form-control" name="email" placeholder="Email" onChange={this.handleInputChange}/>
                 </div>
                 <br/>
+                <div style={{width: '30%'}} class="form-group">
+                        <input  type="password" class="form-control" name="password" placeholder="Password" onChange={this.handleInputChange}/>
+                </div>
                 <div style={{width: '30%'}}>
-                    <button class="btn btn-success" type="submit">Create</button>
+                    <button class="btn btn-success" type="submit">SignUp</button>
                 </div> 
             </form>
         </div>

@@ -29,7 +29,7 @@ if (process.env.NODE_ENV === "production"){
 //   app.use(express.static('./client/build'))
 // }
 
-// var con = mysql.createConnection({
+// const db = mysql.createConnection({
 //   user: "root",
 //   host: "localhost",
 //   password: "password",
