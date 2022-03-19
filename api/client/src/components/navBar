@@ -1,0 +1,22 @@
+import React from "react";
+import { Link } from "react-router-dom";
+
+const NavBar = () => {
+//   const user = auth.getCurrentUser();
+
+  return (
+    <div>
+    <li>
+      <Link to="/cats">Favorites</Link>
+    </li>
+    <li>
+      <Link to="/sheeps">Profile</Link>
+    </li>
+    <li>
+      <Link to="/goats">Cart</Link>
+    </li>
+  </div>
+  );
+};
+
+export default NavBar;
