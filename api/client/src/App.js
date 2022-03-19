@@ -1,10 +1,11 @@
 import './App.css';
 import React, { Component } from "react";
-import { Route, Redirect } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import Main from './components/Main';
 import Register from './components/register';
-import {BrowserRouter} from 'react-router-dom';
-import NavBar from './components/navBar';
+import {BrowserRouter, Routes, Route} from 'react-router-dom';
+import NavBar from './components/NavBar/index';
+import Home from './pages/index';
 
 class App extends Component {
   state = {}
@@ -12,13 +13,13 @@ class App extends Component {
   render() {
     return (
       <BrowserRouter>
-      <NavBar />
-      <div>
-        {/* App Component Has a Child Component called Main*/}
-        <Register/>
-      </div>
-    </BrowserRouter>
-    )
+        <NavBar />
+        <Routes>
+          <Route path='/' exact element={<Home />} />
+          <Route path='/register' element={<Register />} />
+        </Routes>
+      </BrowserRouter>
+    );
   }
 }
 
