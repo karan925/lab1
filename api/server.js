@@ -4,13 +4,26 @@ const cors = require("cors");
 const mysql = require("mysql");
 const path = require("path");
 const { Http2ServerResponse } = require("http2");
-const e = require("express");
+
+
+const jwt = require("jsonwebtoken");
+const { nextTick } = require("process");
 
 app.use(cors());
-// app.options('*', cors());
+app.options('*', cors());
+
+// app.use(cors({origin: 'http://cmpe-lab1-273.herokuapp.com'}));
+
 
 app.use(express.json());
-
+const session = require('express-session');
+app.use(
+  session({
+      resave: false,
+      saveUninitialized: true,
+      secret: "jwtSecret",
+    })
+  );
 
 
 //This will create a middleware.
@@ -18,7 +31,8 @@ app.use(express.json());
 if (process.env.NODE_ENV === "production"){
   app.use(express.static("client/build"));
   app.get('*', function(req, res){
-    res.sendFile(path.resolve(__dirname, 'build', 'index.html'));
+    const index = path.join(__dirname, 'client', 'build', 'index.html');
+    res.sendFile(index);
   })
 }
 
@@ -108,6 +122,7 @@ app.post('/register', (req, res) => {
   });
 });
 
+
 app.post('/login', (req, res) => {
 
   const email = req.body.email;
@@ -117,7 +132,7 @@ app.post('/login', (req, res) => {
 
   pool.getConnection(function(err, connection) {
     if (err) throw err; // not connected!
-  
+
     // Use the connection
     connection.query("SELECT * FROM login_table WHERE email = ? AND password = ?", [email, password], function (error, results, fields) {
       // When done with the connection, release it.
@@ -128,14 +143,44 @@ app.post('/login', (req, res) => {
         console.log(error)
       }else if(results.length > 0){
         // console.log(results)
-        res.status(200).send(results);
+        // console.log(results)
+
+        const id = results[0].id;
+        const token = jwt.sign({id}, "jwtSecret", {
+          expiresIn: 300
+        });
+        req.session.user = results;
+        console.log(req.session.user);
+        res.json({auth: true, token: token, result: results});
       } else{
-      res.status(400).json({ error: error.message });
+        // res.status(400).json({ error: "Incorrect email/password combination" });
+        res.status(400).json({auth: false, message: "No user exists"});
       }
       // Don't use the connection here, it has been returned to the pool.
     });
   });
 });
+
+const verifyJWT = (req, res) => {
+  const token = req.headers["x-access-token"];
+
+  if(!token){
+    res.send("Need token");
+  } else{
+    jwt.verify(token, "jwtSecret", (err, decoded) => {
+      if(err){
+        res.json({auth: false, message: "failed to authenticate"});
+      }else{
+        req.userId = decoded.id;
+        next();
+      }
+    })
+  }
+}
+
+app.get("/isUserAuth", verifyJWT, (req, res) => {
+  res.send("Authenticated");
+})
 
 
 app.listen(process.env.PORT || 5000, () => {

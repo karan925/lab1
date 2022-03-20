@@ -4,6 +4,8 @@ import { Button, ButtonGroup, ButtonToolbar } from 'react-bootstrap-buttons';
 import 'react-bootstrap-buttons/dist/react-bootstrap-buttons.css';
 import { NavLink, useNavigate } from 'react-router-dom'
 import Axios from "axios"
+import AuthService from "../services/authService";
+import Home from '../pages/index';
 
 class Login extends Component {
   
@@ -15,6 +17,7 @@ class Login extends Component {
       loginError: ""
     };
 
+
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleChange = this.handleChange.bind(this);
   }
@@ -25,18 +28,30 @@ class Login extends Component {
     })
   }
 
-  handleSubmit(event) {
-    const {email, password } = this.state; 
-
-    Axios.post('https://cmpe-lab1-273.herokuapp.com/login', {
-      email: email,
-      password: password
-  }).then((response) => {
-      console.log("THIS IS " + response);
-  }).catch(error => {
-      console.log("login error", error);
-  });
+  async handleSubmit(event) {
     event.preventDefault();
+    const {email, password } = this.state; 
+    try{
+      await AuthService.login(email, password).then(
+      (response) => {
+        if(response.auth){
+        console.log("made it herePOPOP")
+        console.log(response);
+        // this.props.navigate('/home');
+        window.location = "/";
+        }
+      else{
+        console.log(response);
+      }},
+      );
+    } catch (error){
+      console.log(error);
+    }
+  }
+
+  handleReg(event){
+    event.preventDefault();
+    window.location = "/register";
   }
 
   render() {
@@ -64,10 +79,18 @@ class Login extends Component {
                 </div> 
                 <br/>
             </form>
+            <div>
+                <button color="primary" onClick={this.handleReg}>Register</button>
+            </div>
         </div>
     </div>
       );
     } 
 }
+
+// function WithNavigate(props) {
+//   let navigate = useNavigate();
+//   return <Home {...props} navigate={navigate} />
+// }
 
 export default Login;

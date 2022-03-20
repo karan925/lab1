@@ -7,11 +7,26 @@ import Login from './components/login';
 import {BrowserRouter, Routes, Route} from 'react-router-dom';
 import NavBar from './components/NavBar/index';
 import Home from './pages/index';
+import authService from './services/authService';
+import SearchBar from './components/searchBar';
 
 class App extends Component {
-  state = {}
+  
+  constructor(props){
+    super();
+    this.state = {
+    };
+
+  }
 
   render() {
+
+    const user = authService.getCurrentUser();
+
+    if (user) {
+      console.log(user);
+    }
+
     return (
       <BrowserRouter>
         <NavBar />

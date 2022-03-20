@@ -10,3 +10,14 @@
 .container {
   text-align: center;
 }
+
+.SearchBar {
+  position: absolute;
+  top: 25px;
+  left: 320px;
+}
+
+.SearchBar input {
+  height: 30px;
+  width: 750px;
+}
