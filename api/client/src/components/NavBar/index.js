@@ -16,26 +16,27 @@ const NavBar = () => {
     <>
     <Nav>
       <NavLink1 to="/">
-      {/* <h1>ETSY</h1> */}
       <img src="./etsy1.png" alt="bug" height={60} left={1000} width={100} />
       </NavLink1>
-      <SearchBar />
+      <SearchBar placeholder={"Search for anything"} />
       <Bars />
       {user && (
           <NavMenu>
            <NavLink to="/about">Favorites</NavLink>
-           <NavLink to="/about">Profile</NavLink>
-           <NavLink to="/about">Cart</NavLink>
+           <NavLink to="/profile">Profile</NavLink>
            </NavMenu>
           )}
      {user ? (  
       <NavMenu>
             <NavBtnLink onClick={logOut}>Logout</NavBtnLink>
+            <NavLink to="/about">
+        <img src="./cart2.png" alt="bug" height={30} left={10} width={40} /></NavLink>
       </NavMenu>
       ): (
         <NavMenu>
         <NavLink to="/login">Sign In</NavLink>
-        <NavLink to="/about">Cart</NavLink>
+        <NavLink to="/about">
+        <img src="./cart2.png" alt="bug" height={30} left={10} width={40} /></NavLink>
         </NavMenu>
       )}
     </Nav>

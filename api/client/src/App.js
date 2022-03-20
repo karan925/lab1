@@ -9,6 +9,7 @@ import NavBar from './components/NavBar/index';
 import Home from './pages/index';
 import authService from './services/authService';
 import SearchBar from './components/searchBar';
+import ProfileUpdate from './pages/profile';
 
 class App extends Component {
   
@@ -34,6 +35,7 @@ class App extends Component {
           <Route path='/' exact element={<Home />} />
           <Route path='/login' element={<Login />} />
           <Route path='/register' element={<Register />} />
+          <Route path='/profile' element={<ProfileUpdate />} />
         </Routes>
       </BrowserRouter>
     );

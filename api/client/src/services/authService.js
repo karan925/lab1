@@ -43,6 +43,7 @@ const login = (email, password) => {
         console.log("THIS IS " + response.data.auth);
         console.log(response.data)
         localStorage.setItem("user", JSON.stringify(response.data));
+        localStorage.setItem("name", response.data.result[0].firstName + " " + response.data.result[0].lastName);
         // localStorage.setItem("token", response.data.token);
         return response.data;
     }).catch(error => {
@@ -64,6 +65,8 @@ const login = (email, password) => {
 
 const logout = () => {
   localStorage.removeItem("user");
+  localStorage.removeItem("name");
+
   return window.location = "/";
 };
 
@@ -72,11 +75,32 @@ const getCurrentUser = () => {
   return localStorage.getItem("user");
 };
 
+const update_profile = (firstName, lastName) => {
+    return Axios
+    .post(API_URL + "/update_profile", {
+        firstName,
+        lastName,
+    })
+    .then((response) => {
+        console.log("THIS IS " + response.data.auth);
+        console.log(response.data)
+        // localStorage.setItem("user", JSON.stringify(response.data));
+        // localStorage.setItem("name", response.data.result[0].firstName + " " + response.data.result[0].lastName);
+        // localStorage.setItem("token", response.data.token);
+        // return response.data;
+    }).catch(error => {
+        // console.log("login error", error);
+        return error;
+    });
+
+}
+
 const authService = {
   signup,
   login,
   logout,
   getCurrentUser,
+  update_profile,
 };
 
 export default authService;
