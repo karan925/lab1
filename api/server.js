@@ -6,6 +6,12 @@ const path = require("path");
 const { Http2ServerResponse } = require("http2");
 const multer = require('multer');
 
+const { createTokens, validateToken } = require("./jwttoken");
+
+var cookieParser = require('cookie-parser')
+
+app.use(cookieParser())
+
 const storage = multer.diskStorage({
   destination: (req, res, cb) => {
     cb(null, "./");},
@@ -19,6 +25,7 @@ const upload = multer({
   storage: storage
 });
 
+const { sign, verify } = require("jsonwebtoken");
 
 const jwt = require("jsonwebtoken");
 const { nextTick } = require("process");
@@ -109,13 +116,24 @@ app.post('/login', (req, res) => {
         // console.log(results)
         // console.log(results)
 
-        const id = results[0].id;
-        const token = jwt.sign({id}, "jwtSecret", {
-          expiresIn: 300
+        // const id = results[0].id;
+        // const token = jwt.sign({id}, "jwtSecret", {
+        //   expiresIn: 300
+        // });
+        // req.header['x-access-token'] = token;
+
+        console.log(results[0].id + " ID");
+        const accessToken = createTokens(results[0].id);
+
+        console.log("Access token " + accessToken);
+
+        res.cookie("access-token", accessToken, {
+          maxAge: 60 * 60 * 24 * 30 * 1000,
+          httpOnly: true,
         });
         req.session.user = results;
         console.log(req.session.user);
-        res.json({auth: true, token: token, result: results});
+        res.json({auth: true, token: accessToken, result: results});
       } else{
         // res.status(400).json({ error: "Incorrect email/password combination" });
         res.status(400).json({auth: false, message: "No user exists"});
@@ -146,24 +164,92 @@ app.get("/isUserAuth", verifyJWT, (req, res) => {
   res.send("Authenticated");
 })
 
-app.put('/update_profile', (req, res) => {
+app.post('/update_profile', validateToken, (req, res) => {
 
-  
-  const firstName = req.body.firstName;
-  const lastName = req.body.lastName;
   const gender = req.body.gender;
-  const birthdate = req.body.birthdate;
+  const date_of_birth = req.body.date_of_birth;
   const city = req.body.city;
   const about = req.body.about
-  const id = 264;
+  const address = req.body.address;
+  const state = req.body.state;
+  const country = req.body.country;
+  // const id = 264;
 
-  const token = req.headers["x-access-token"];
+  // console.log(JSON.stringify(req.header))
+  // const token = req.header["x-access-token"];
+
+  const token = req.cookies["access-token"];
+
+  console.log(token + "THIS TOKEN")
+
+  // const decoded = jwt.verify(token, "jwtSecret");  
+  const validToken = verify(token, "jwtSecret");
+  console.log(validToken);
+  var userId = validToken.user
+  console.log(userId)  
+
+  console.log(req.authenticated);  
+
+
+
+  console.log(gender, date_of_birth, city, about, address, state, country, userId);
+
+  // res.send("success");
+
+  pool.getConnection(function(err, connection) {
+    
+    if (err) throw err; // not connected!
+  
+    // Use the connection
+    connection.query("REPLACE INTO profile (gender, date_of_birth, city, about, address, state, country, users_id) VALUES (?,?,?,?,?,?,?,?)", [gender, date_of_birth, city, about, address, state, country, userId], function (error, results, fields) {
+      // When done with the connection, release it.
+      connection.release()
+  
+      // Handle error after the release.
+      if (error){
+        res.status(400).json({ error: error.message });
+      }else{
+        
+      // res.cookie("access-token", accessToken, {
+      //     maxAge: 60 * 60 * 24 * 30 * 1000,
+      //     httpOnly: true,
+      //   });
+      res.status(200).json("Success");
+      // res.cookie("access-token", accessToken, {
+      //   maxAge: 60 * 60 * 24 * 30 * 1000,
+      //   httpOnly: true,
+      // });
+      // res.end()
+      }
+      // Don't use the connection here, it has been returned to the pool.
+    });
+  });
+});
+
+app.put('/update_login', validateToken, (req, res) => {
+
+  const firstName = req.body.firstName;
+  const lastName = req.body.lastName;
+  // const id = 264;
+
+  // const token = req.headers["x-access-token"];
+  const token = req.cookies["access-token"];
+
+  console.log(token + "THIS TOKEN")
+
+  const validToken = verify(token, "jwtSecret");
+  console.log(validToken);
+  var userId = validToken.user
+  console.log(userId)  
+
+  console.log(req.authenticated);  
+
 
   // const decoded = jwt.verify(token, "jwtSecret");  
   // var userId = decoded.id  
-  // console.log(userId)  
+  // console.log(userId + " ID")
 
-  console.log(firstName, lastName, gender, birthdate, city, about, id);
+  console.log(firstName, lastName, userId);
 
   // res.send("success");
 
@@ -171,7 +257,7 @@ app.put('/update_profile', (req, res) => {
     if (err) throw err; // not connected!
   
     // Use the connection
-    connection.query("REPLACE INTO profile (gender, date_of_birth, city, about, users_id) VALUES (?,?,?,?, ?)", [gender, birthdate, city, about, id], function (error, results, fields) {
+    connection.query("UPDATE login_table set firstName = ?, lastName = ? WHERE id = ?", [firstName, lastName, userId], function (error, results, fields) {
       // When done with the connection, release it.
       connection.release()
   
@@ -180,6 +266,7 @@ app.put('/update_profile', (req, res) => {
         res.status(400).json({ error: error.message });
       }else{
       res.status(200).json("Success");
+      // res.end()
       }
       // Don't use the connection here, it has been returned to the pool.
     });

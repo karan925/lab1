@@ -2,6 +2,7 @@ import Axios from "axios";
 
 // const API_URL = "/auth";
 const API_URL = "https://cmpe-lab1-273.herokuapp.com"
+const LOCAL = "http://localhost:5000"
 
 const signup = (email, password, firstName, lastName) => {
   return Axios
@@ -44,6 +45,7 @@ const login = (email, password) => {
         console.log(response.data)
         localStorage.setItem("user", JSON.stringify(response.data));
         localStorage.setItem("name", response.data.result[0].firstName + " " + response.data.result[0].lastName);
+        localStorage.setItem("token", response.data.token);
         // localStorage.setItem("token", response.data.token);
         return response.data;
     }).catch(error => {
@@ -75,15 +77,21 @@ const getCurrentUser = () => {
   return localStorage.getItem("user");
 };
 
-const update_profile = (firstName, lastName) => {
+const update_profile = (gender, date_of_birth, city, about, address, state, country) => {
     return Axios
     .post(API_URL + "/update_profile", {
-        firstName,
-        lastName,
+        gender, 
+        date_of_birth,  
+        city, 
+        about,
+        address,
+        state,
+        country
     })
     .then((response) => {
-        console.log("THIS IS " + response.data.auth);
+        console.log("THIS IS " + response.data);
         console.log(response.data)
+        return response.data
         // localStorage.setItem("user", JSON.stringify(response.data));
         // localStorage.setItem("name", response.data.result[0].firstName + " " + response.data.result[0].lastName);
         // localStorage.setItem("token", response.data.token);
@@ -92,7 +100,28 @@ const update_profile = (firstName, lastName) => {
         // console.log("login error", error);
         return error;
     });
+}
 
+const update_login = (firstName, lastName) => {
+    return Axios
+    .put(API_URL + "/update_login", {
+        firstName,
+        lastName,
+    })
+    .then((response) => {
+        console.log("THIS IS321 " + response.data);
+        console.log(response.data)
+        localStorage.removeItem("name");
+        localStorage.setItem("name", firstName + " " + lastName);
+        return response.data
+        // localStorage.setItem("user", JSON.stringify(response.data));
+        // localStorage.setItem("name", response.data.result[0].firstName + " " + response.data.result[0].lastName);
+        // localStorage.setItem("token", response.data.token);
+        // return response.data;
+    }).catch(error => {
+        // console.log("login error", error);
+        return error;
+    });
 }
 
 const authService = {
@@ -101,6 +130,7 @@ const authService = {
   logout,
   getCurrentUser,
   update_profile,
+  update_login,
 };
 
 export default authService;

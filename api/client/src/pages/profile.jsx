@@ -14,8 +14,13 @@ class ProfileUpdate extends Component {
       firstName: "",
       lastName: "",
       gender: "",
-      profile_pic: "",
       address: "",
+      city: "",
+      state: "",
+      country: "",
+      month:"",
+      day: "",
+      date_of_birth: "",
       about: ""
     };
 
@@ -24,15 +29,30 @@ class ProfileUpdate extends Component {
   }
 
   handleChange(event){
-    // this.setState({
-    //   [event.target.name]: event.target.value
-    // })
-    const value =
-      event.target.type === "checkbox" ? event.target.checked : event.target.value;
     this.setState({
-      ...this.state,
-      [event.target.name]: value
-    });
+      [event.target.name]: event.target.value
+    })
+//     const value =
+//       event.target.type === "select" ? event.target.select : event.target.value;
+//     this.setState({
+//       ...this.state,
+//       [event.target.name]: value
+//     });
+  }
+
+  handleChange1(event){
+    this.setState({gender : event.target.value});
+  }
+
+  handleChange4(event){
+    this.setState({country : event.target.value});
+  }
+
+  handleChange2(event){
+    this.setState({month : event.target.value});
+  }
+  handleChange3(event){
+    this.setState({day : event.target.value});
   }
 
 imageHandler(event){
@@ -43,14 +63,34 @@ imageHandler(event){
 
 
 async handleSubmit(event) {
-    const {firstName, lastName, gender, profile_pic, address, about} = this.state; 
+
+    event.preventDefault();
+    const {firstName, lastName, gender, month, day, city, about, address, state, country } = this.state; 
 
     // gender, profile_pic, address, about
 
-    event.preventDefault();
+    const date_of_birth = month + day;
+
+    console.log("1 it")
+    console.log(month)
+    console.log(day)
+    console.log("3 it")
+    console.log(this.state.month)
+
+
+    console.log("4 it");
+    console.log(firstName);
+    console.log(lastName);
+
+
+
+
+    console.log("made it")
+
+    console.log(date_of_birth);
 
     try{
-        await authService.update_profile(firstName, lastName).then(
+        await authService.update_profile(gender, date_of_birth, city, about, address, state, country).then(
         (response) => {
             console.log(response)
           if(response === "Success"){
@@ -67,6 +107,28 @@ async handleSubmit(event) {
         console.log(error);
       }
 
+    try{
+        console.log("trying")
+        await authService.update_login(firstName, lastName).then(
+        (response) => {
+            console.log(response + "This is response")
+          if(response){
+          console.log("made it herePOPOP123123")
+          console.log(response);
+          // this.props.navigate('/home');
+        //   window.location = "/login";
+          }
+        else{
+          console.log(response + "RESPONSE 1");
+        }},
+        );
+      } catch (error){
+        console.log(error + "ERROR");
+      }
+
+    //   window.location = "/";
+      
+
     // Axios.post('https://cmpe-lab1-273.herokuapp.com/register', {
     //     email: email,
     //     password: password,
@@ -79,6 +141,30 @@ async handleSubmit(event) {
     // });
 
   };
+
+//   async handleSubmit2(event) {
+//     const {firstName, lastName} = this.state; 
+
+//     try{
+//         console.log("trying")
+//         await authService.update_login(firstName, lastName).then(
+//         (response) => {
+//             console.log(response)
+//           if(response === "Success"){
+//           console.log("made it herePOPOP")
+//           console.log(response);
+//           // this.props.navigate('/home');
+//         //   window.location = "/login";
+//           }
+//         else{
+//           console.log(response + "RESPONSE 1");
+//         }},
+//         );
+//       } catch (error){
+//         console.log(error + "ERROR");
+//       }
+
+//   };
 
   render() {
 
@@ -101,12 +187,13 @@ async handleSubmit(event) {
                 <div style={{textAlign:"center"} } class="form-group">
                     <h3>Your Name: {localStorage.getItem("name")}</h3>
                     <input type="text" class="form-control" name="firstName" placeholder="First Name" value = {this.state.firstName} onChange={this.handleChange}/>
-                    <input type="text" class="form-control" name="firstName" placeholder="Last Name" value = {this.state.lastName} onChange={this.handleChange}/>
+                    <div>
+                        <input type="text" class="form-control" name="lastName" placeholder="Last Name" value = {this.state.lastName} onChange={this.handleChange}/></div>
                 </div>
                 <br/>
                 <div style={{textAlign:"center"} } class="form-group">
                 <h3>Gender:</h3>
-                    <select onChange={this.handleChange} value={this.state.gender}>
+                    <select onChange={this.handleChange1.bind(this)} value={this.state.gender}>
                         <option selected value="">Choose your gender</option>
                         <option value="male">Male</option>
                         <option value="female">Female</option>
@@ -115,13 +202,43 @@ async handleSubmit(event) {
                 </div>
                 <br/>
                 <div style={{textAlign:"center"} } class="form-group">
+                    <h3>Address</h3>
+                    <input type="text" class="form-control" name="address" placeholder="Address" value = {this.state.address} onChange={this.handleChange}/>
+                </div>
+                <div style={{textAlign:"center"} } class="form-group">
+                    <h3>State</h3>
+                    <input type="text" class="form-control" name="state" placeholder="State" value = {this.state.state} onChange={this.handleChange}/>
+                </div>
+                <div style={{textAlign:"center"} } class="form-group">
                     <h3>City</h3>
-                    <input type="text" class="form-control" name="address" placeholder="City" value = {this.state.address} onChange={this.handleChange}/>
+                    <input type="text" class="form-control" name="city" placeholder="City" value = {this.state.city} onChange={this.handleChange}/>
+                </div>
+                <br/>
+                <div style={{textAlign:"center"} } class="form-group">
+                <h3>Country:</h3>
+                    <select onChange={this.handleChange4.bind(this)} value={this.state.country}>
+                        <option selected value="">Choose your country</option>
+                        <option value="USA">United States</option>
+                        <option value="Italy">Italy</option>
+                        <option value="France">France</option>
+                        <option value="United Kingdom">United Kingdom</option>
+                        <option value="Portgual">Portgual</option>
+                        <option value="Canada">Canada</option>
+                        <option value="Mexico">Mexico</option>
+                        <option value="India">India</option>
+                        <option value="China">China</option>
+                        <option value="Norway">Norway</option>
+                        <option value="Ireland">Ireland</option>
+                        <option value="Japan">Japan</option>
+                        <option value="Iceland">Iceland</option>
+                        <option value="Sweden">Sweden</option>
+                        <option value="Russia">Russia</option>
+                    </select>
                 </div>
                 <br/>
                 <div style={{textAlign:"center"}} class="form-group">
                     <h3>Birthday</h3>
-                    <select onChange={this.handleChange} value={this.state.gender}>
+                    <select onChange={this.handleChange2.bind(this)} value={this.state.month}>
                         <option selected value="">- month -</option>
                         <option value="January">January</option>
                         <option value="Feburary">Feburary</option>
@@ -136,7 +253,7 @@ async handleSubmit(event) {
                         <option value="November">November</option>
                         <option value="December">December</option>
                     </select>
-                    <select onChange={this.handleChange} value={this.state.gender}>
+                    <select onChange={this.handleChange3.bind(this)} value={this.state.day}>
                             <option selected value="">- day -</option>
                             <option value="1">1</option>
                             <option value="2">2</option>
@@ -176,7 +293,7 @@ async handleSubmit(event) {
                 <br/>
                 <div style={{textAlign:"center"}} class="form-group">
                     <h3>About</h3>
-                        <textarea type="password" class="form-control" name="confirm_password" placeholder="" value={this.state.confirm_password} onChange={this.handleChange}/>
+                        <textarea type="password" class="form-control" name="about" placeholder="" value={this.state.about} onChange={this.handleChange}/>
                 </div>
                 <span>Tell people a little about your self</span>
                 <br/>
