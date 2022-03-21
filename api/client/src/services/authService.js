@@ -68,6 +68,7 @@ const login = (email, password) => {
 const logout = () => {
   localStorage.removeItem("user");
   localStorage.removeItem("name");
+  localStorage.removeItem("token");
 
   return window.location = "/";
 };
@@ -124,6 +125,24 @@ const update_login = (firstName, lastName) => {
     });
 }
 
+const create_shop = (shop_name) => {
+    return Axios
+    .post(API_URL + "/create_shop", {
+        shop_name })
+    .then((response) => {
+        console.log("THIS IS321 " + response.data);
+        console.log(response.data);
+        return response.data
+        // localStorage.setItem("user", JSON.stringify(response.data));
+        // localStorage.setItem("name", response.data.result[0].firstName + " " + response.data.result[0].lastName);
+        // localStorage.setItem("token", response.data.token);
+        // return response.data;
+    }).catch(error => {
+        // console.log("login error", error);
+        return error;
+    });
+}
+
 const authService = {
   signup,
   login,
@@ -131,6 +150,7 @@ const authService = {
   getCurrentUser,
   update_profile,
   update_login,
+  create_shop,
 };
 
 export default authService;

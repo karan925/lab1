@@ -126,45 +126,9 @@ async handleSubmit(event) {
         console.log(error + "ERROR");
       }
 
-    //   window.location = "/";
+      window.location = "/";
       
-
-    // Axios.post('https://cmpe-lab1-273.herokuapp.com/register', {
-    //     email: email,
-    //     password: password,
-    //     firstName: firstName,
-    //     lastName: lastName
-    // }).then((response) => {
-    //     console.log("THIS IS " + response.data);
-    // }).catch(error => {
-    //     console.log("login error", error);
-    // });
-
   };
-
-//   async handleSubmit2(event) {
-//     const {firstName, lastName} = this.state; 
-
-//     try{
-//         console.log("trying")
-//         await authService.update_login(firstName, lastName).then(
-//         (response) => {
-//             console.log(response)
-//           if(response === "Success"){
-//           console.log("made it herePOPOP")
-//           console.log(response);
-//           // this.props.navigate('/home');
-//         //   window.location = "/login";
-//           }
-//         else{
-//           console.log(response + "RESPONSE 1");
-//         }},
-//         );
-//       } catch (error){
-//         console.log(error + "ERROR");
-//       }
-
-//   };
 
   render() {
 

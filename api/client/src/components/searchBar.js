@@ -5,6 +5,7 @@ function SearchBar({placeholder, data}) {
     <div class = "search">
         <div class = "SearchBar">
             <input type = "text" placeholder={placeholder}/>
+            <button type = "submit">Search</button>
         <div class = "results"></div>
         </div>
         </div>

@@ -22,15 +22,17 @@ const NavBar = () => {
       <Bars />
       {user && (
           <NavMenu>
-           <NavLink to="/about">Favorites</NavLink>
+           <NavLink to="/favorites">Favorites</NavLink>
            <NavLink to="/profile">Profile</NavLink>
            </NavMenu>
           )}
      {user ? (  
       <NavMenu>
             <NavBtnLink onClick={logOut}>Logout</NavBtnLink>
-            <NavLink to="/about">
+            <NavLink to="/cart">
         <img src="./cart2.png" alt="bug" height={30} left={10} width={40} /></NavLink>
+        <NavLink to="/create_shop">Create Shop</NavLink>
+        <NavLink to="/purchases">Purchases</NavLink>
       </NavMenu>
       ): (
         <NavMenu>

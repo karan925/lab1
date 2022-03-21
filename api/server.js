@@ -87,6 +87,7 @@ app.post('/register', (req, res) => {
         res.status(400).json({ error: error.message });
       }else{
       res.status(200).json("Success");
+      res.end();
       }
       // Don't use the connection here, it has been returned to the pool.
     });
@@ -113,14 +114,6 @@ app.post('/login', (req, res) => {
       if (error){
         console.log(error)
       }else if(results.length > 0){
-        // console.log(results)
-        // console.log(results)
-
-        // const id = results[0].id;
-        // const token = jwt.sign({id}, "jwtSecret", {
-        //   expiresIn: 300
-        // });
-        // req.header['x-access-token'] = token;
 
         console.log(results[0].id + " ID");
         const accessToken = createTokens(results[0].id);
@@ -137,6 +130,7 @@ app.post('/login', (req, res) => {
       } else{
         // res.status(400).json({ error: "Incorrect email/password combination" });
         res.status(400).json({auth: false, message: "No user exists"});
+        res.end();
       }
       // Don't use the connection here, it has been returned to the pool.
     });
@@ -215,6 +209,7 @@ app.post('/update_profile', validateToken, (req, res) => {
       //     httpOnly: true,
       //   });
       res.status(200).json("Success");
+      res.end();
       // res.cookie("access-token", accessToken, {
       //   maxAge: 60 * 60 * 24 * 30 * 1000,
       //   httpOnly: true,
@@ -266,7 +261,47 @@ app.put('/update_login', validateToken, (req, res) => {
         res.status(400).json({ error: error.message });
       }else{
       res.status(200).json("Success");
+      res.end();
       // res.end()
+      }
+      // Don't use the connection here, it has been returned to the pool.
+    });
+  });
+});
+
+app.post('/create_shop', (req, res) => {
+
+  const shop_name = req.body.shop_name;
+
+  console.log(shop_name);
+  // res.clearCookie("access-token");
+  
+
+  const token = req.cookies["access-token"];
+
+  console.log(token + "THIS TOKEN")
+
+  const validToken = verify(token, "jwtSecret");
+  console.log(validToken);
+  var userId = validToken.user
+  console.log(userId)  
+
+  console.log(req.authenticated);  
+
+  pool.getConnection(function(err, connection) {
+    if (err) throw err; // not connected!
+  
+    // Use the connection
+    connection.query("INSERT INTO shops (shop_name, id_shop_owner) VALUES (?, ?)", [shop_name, userId], function (error, results, fields) {
+      // When done with the connection, release it.
+      connection.release()
+  
+      // Handle error after the release.
+      if (error){
+        res.status(400).json({ error: error.message });
+      }else{
+      res.status(200).json("Success");
+      res.end();
       }
       // Don't use the connection here, it has been returned to the pool.
     });

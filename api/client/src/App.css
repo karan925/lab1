@@ -21,3 +21,57 @@
   height: 30px;
   width: 750px;
 }
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0 4px;
+  width: 100px;
+}
+
+/* Create two equal columns that sits next to each other */
+.column {
+  flex: 50%;
+  padding: 0 4px;
+  width: 100px;
+}
+
+.column img {
+  margin-top: 8px;
+  vertical-align: middle;
+}
+
+.pic {
+  height: 20px;
+  width: 20px;
+}
+
+.footer {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+.footer-ele2 {
+  position: fixed;
+  bottom: 0;
+  left: 40;
+}
+
+.footer-ele1 {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+}
+
+.footer-ele3 {
+  position: fixed;
+  bottom: 0;
+  left: -40;
+}
+
+.footer-ele4 {
+  position: fixed;
+  bottom: 0;
+  left: 80;
+}

@@ -5,7 +5,7 @@ import 'react-bootstrap-buttons/dist/react-bootstrap-buttons.css';
 import { NavLink, useNavigate } from 'react-router-dom'
 import Axios from "axios"
 import AuthService from "../services/authService";
-import Home from '../pages/index';
+import Home from '../pages/home';
 
 class Login extends Component {
   

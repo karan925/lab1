@@ -6,10 +6,15 @@ import Register from './components/register';
 import Login from './components/login';
 import {BrowserRouter, Routes, Route} from 'react-router-dom';
 import NavBar from './components/NavBar/index';
-import Home from './pages/index';
+import Home from './pages/home';
 import authService from './services/authService';
 import SearchBar from './components/searchBar';
 import ProfileUpdate from './pages/profile';
+import CreateShop from './pages/shop';
+import Cart from './pages/cart';
+import Favorites from './pages/favorites';
+import Purchases from './pages/purchases';
+import Footer from './components/NavBar/footer';
 
 class App extends Component {
   
@@ -36,7 +41,12 @@ class App extends Component {
           <Route path='/login' element={<Login />} />
           <Route path='/register' element={<Register />} />
           <Route path='/profile' element={<ProfileUpdate />} />
+          <Route path='/create_shop' element={<CreateShop />} />
+          <Route path='/cart' element={<Cart />} />
+          <Route path='/favorites' element={<Favorites />} />
+          <Route path='/purchases' element={<Purchases />} />
         </Routes>
+        <Footer />
       </BrowserRouter>
     );
   }
