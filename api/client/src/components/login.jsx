@@ -1,16 +1,17 @@
 import React, { Component } from "react";
 import { Redirect } from "react-router";
-import { Button, ButtonGroup, ButtonToolbar } from 'react-bootstrap-buttons';
 import 'react-bootstrap-buttons/dist/react-bootstrap-buttons.css';
 import { NavLink, useNavigate } from 'react-router-dom'
 import Axios from "axios"
-import AuthService from "../services/authService";
+import auth1Service from "../services/auth1Service";
 import Home from '../pages/home';
+import Button from 'react-bootstrap/Button';
+import { Form } from "react-bootstrap";
 
 class Login extends Component {
   
   constructor(props){
-    super();
+    super(props);
     this.state = {
       email: "",
       password: "",
@@ -30,11 +31,16 @@ class Login extends Component {
 
   async handleSubmit(event) {
     event.preventDefault();
-    const {email, password } = this.state; 
+    console.log("made it here")
+    const {email, password } = this.state;
+    console.log(email)
+    console.log(password)
+
     try{
-      await AuthService.login(email, password).then(
+      await auth1Service.login(email, password).then(
       (response) => {
-        if(response.auth){
+        console.log("this is resposne in handle submit" + response)
+        if(response){
         console.log("made it herePOPOP")
         console.log(response);
         // this.props.navigate('/home');
@@ -59,29 +65,32 @@ class Login extends Component {
     return ( 
       
     <div>
-        <div class="container">
+        <div class="container" style={{width:"40%"}}>
             <br />
         <div>
             <h1>Login</h1>
         </div>
+        <Form onSubmit={this.handleSubmit}>
+        <Form.Group className="mb-3" controlId="formBasicEmail">
+          <Form.Label>Email address</Form.Label>
+          <Form.Control type="email" placeholder="Enter email" name="email" value={this.state.email} onChange={this.handleChange}  />
+          <Form.Text className="text-muted">
+            We'll never share your email with anyone else.
+          </Form.Text>
+        </Form.Group>
+
+        <Form.Group className="mb-3" controlId="formBasicPassword">
+          <Form.Label>Password</Form.Label>
+          <Form.Control type="password" placeholder="Password" name="password" value={this.state.password} onChange={this.handleChange}/>
+        </Form.Group>
+        <Button variant="primary" type="submit">
+          Submit
+        </Button>
+      </Form>
         <br/>
-            <form onSubmit={this.handleSubmit}>
-                <div style={{textAlign:"center"} } class="form-group">
-                    <input type="email" class="form-control" name="email" placeholder="Email" value = {this.state.email} onChange={this.handleChange}/>
-                </div>
-                <br/>
-                <div style={{textAlign:"center"}} class="form-group">
-                        <input type="password" class="form-control" name="password" placeholder="Password" value={this.state.password} onChange={this.handleChange}/>
-                </div>
-                <br/>
-                <div>
-                    <button color="primary" type="submit">Sign In</button>
-                </div> 
-                <br/>
-            </form>
-            <div>
-                <button color="primary" onClick={this.handleReg}>Register</button>
-            </div>
+        <Button variant="warning" onClick={this.handleReg}>
+          Register
+        </Button>
         </div>
     </div>
       );

@@ -1,0 +1,5 @@
+{
+    "dbEndpoint": "https://cmpe-lab1-273.herokuapp.com",
+    "port": "5000",
+    "jwtPrivateKey": "jwtSecret"
+}

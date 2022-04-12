@@ -5,6 +5,23 @@ const mysql = require("mysql");
 const path = require("path");
 const { Http2ServerResponse } = require("http2");
 const multer = require('multer');
+const config = require("./config/default.json");
+
+const user = require("./routes/users");
+const auth = require("./routes/auth");
+
+app.use(cors());
+app.options('*', cors());
+
+var bodyParser = require('body-parser');
+
+app.use(bodyParser.json());
+
+
+app.use("/api/user", user);
+app.use("/api/auth", auth);
+
+const httpServer = require("http").createServer(app);
 
 const { createTokens, validateToken } = require("./jwttoken");
 
@@ -30,8 +47,7 @@ const { sign, verify } = require("jsonwebtoken");
 const jwt = require("jsonwebtoken");
 const { nextTick } = require("process");
 
-app.use(cors());
-app.options('*', cors());
+
 
 // app.use(cors({origin: 'http://cmpe-lab1-273.herokuapp.com'}));
 
@@ -309,6 +325,9 @@ app.post('/create_shop', (req, res) => {
 });
 
 
-app.listen(process.env.PORT || 5000, () => {
-  console.log('app listening on port ${PORT}');
-});
+// app.listen(process.env.PORT || 5000, () => {
+//   console.log('app listening on port ${PORT}');
+// });
+
+const port = process.env.PORT || config.port;
+httpServer.listen(port, () => console.log(`Listning to port ${port}.... `));

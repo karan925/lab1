@@ -4,7 +4,14 @@ import { Button, ButtonGroup, ButtonToolbar } from 'react-bootstrap-buttons';
 import 'react-bootstrap-buttons/dist/react-bootstrap-buttons.css';
 import { NavLink, useNavigate } from 'react-router-dom'
 import Axios from "axios"
-import authService from "../services/authService";
+import auth1Service from "../services/auth1Service";
+import { capitalize } from "lodash";
+
+const user = auth1Service.getCurrentUser();
+let firstName = "";
+if(user){
+  firstName = user.firstName.slice(0,1).toUpperCase() + user.firstName.slice(1, user.firstName.length);
+}
 
 class Home extends Component {
   
@@ -24,6 +31,9 @@ class Home extends Component {
     })
   }
 
+  Capitalize(str){
+    return str.charAt(0).toUpperCase() + str.slice(1);
+    }
 
 async handleSubmit(event) {
 
@@ -54,13 +64,13 @@ async handleSubmit(event) {
 
   render() {
 
-    return ( 
-      
-    <div>
+    if(user){
+      return(
+        <div>
         <div class="container">
             <br />
         <div>
-            <h1>Home</h1>
+            <h1>Welcome to Etsy, {firstName}</h1>
             <span>Items below</span>
         </div>
         <br></br>
@@ -68,7 +78,24 @@ async handleSubmit(event) {
 
         </div>
     </div>
-      );
+      )
+    }
+    else{
+      return ( 
+      
+        <div>
+            <div class="container">
+                <br />
+            <div>
+                <h1>Welcome to Etsy</h1>
+                <span>Items below</span>
+            </div>
+            <br></br>
+            <br></br>
+    
+            </div>
+        </div>
+      )};
     } 
 }
 

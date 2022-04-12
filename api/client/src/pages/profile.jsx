@@ -4,7 +4,10 @@ import { Button, ButtonGroup, ButtonToolbar } from 'react-bootstrap-buttons';
 import 'react-bootstrap-buttons/dist/react-bootstrap-buttons.css';
 import { NavLink, useNavigate } from 'react-router-dom'
 import Axios from "axios"
-import authService from "../services/authService";
+import auth1Service from "../services/auth1Service";
+import { Navigate } from "react-router-dom";
+
+const user = auth1Service.getCurrentUser();
 
 class ProfileUpdate extends Component {
   
@@ -61,6 +64,13 @@ imageHandler(event){
     formData.append('image', file);
 }
 
+// async getUser(){
+//   const user1 = await auth1Service.getCurrentUser();
+//   console.log("in async")
+//   console.log(user1);
+//   this.setState({firstName: user1.firstName})
+//   return user1;
+// }
 
 async handleSubmit(event) {
 
@@ -90,7 +100,7 @@ async handleSubmit(event) {
     console.log(date_of_birth);
 
     try{
-        await authService.update_profile(gender, date_of_birth, city, about, address, state, country).then(
+        await auth1Service.update_profile(gender, date_of_birth, city, about, address, state, country).then(
         (response) => {
             console.log(response)
           if(response === "Success"){
@@ -109,7 +119,7 @@ async handleSubmit(event) {
 
     try{
         console.log("trying")
-        await authService.update_login(firstName, lastName).then(
+        await auth1Service.update_login(firstName, lastName).then(
         (response) => {
             console.log(response + "This is response")
           if(response){
@@ -132,6 +142,13 @@ async handleSubmit(event) {
 
   render() {
 
+    if(!user){
+      return window.location = "/";
+    }
+    // const user = async(authService1.getCurrentUser());
+    // const user = this.getUser();
+    // console.log("in render")
+    // console.log(user.firstName);
     return ( 
       
     <div>
@@ -149,7 +166,7 @@ async handleSubmit(event) {
         <br></br>
             <form onSubmit={this.handleSubmit}>
                 <div style={{textAlign:"center"} } class="form-group">
-                    <h3>Your Name: {localStorage.getItem("name")}</h3>
+                    <h3>Your Name: {user.firstName + " " + user.lastName}</h3>
                     <input type="text" class="form-control" name="firstName" placeholder="First Name" value = {this.state.firstName} onChange={this.handleChange}/>
                     <div>
                         <input type="text" class="form-control" name="lastName" placeholder="Last Name" value = {this.state.lastName} onChange={this.handleChange}/></div>
