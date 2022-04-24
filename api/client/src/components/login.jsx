@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { Redirect } from "react-router";
 import 'react-bootstrap-buttons/dist/react-bootstrap-buttons.css';
 import { NavLink, useNavigate } from 'react-router-dom'
 import Axios from "axios"
@@ -7,15 +6,20 @@ import auth1Service from "../services/auth1Service";
 import Home from '../pages/home';
 import Button from 'react-bootstrap/Button';
 import { Form } from "react-bootstrap";
-
+import { Navigate } from 'react-router';
+import axios from "axios";
+import jwt_decode from 'jwt-decode';
 class Login extends Component {
   
   constructor(props){
     super(props);
     this.state = {
-      email: "",
+      username: "",
       password: "",
-      loginError: ""
+      loginError: "",
+      authFlag: false,
+      token: "",
+      message: ""
     };
 
 
@@ -29,30 +33,50 @@ class Login extends Component {
     })
   }
 
+   //Call the Will Mount to set the auth Flag to false
+  componentWillMount() {
+    this.setState({
+        authFlag: false
+    })
+}
+
   async handleSubmit(event) {
     event.preventDefault();
     console.log("made it here")
-    const {email, password } = this.state;
-    console.log(email)
+    const {username, password } = this.state;
+    console.log(username)
     console.log(password)
-
-    try{
-      await auth1Service.login(email, password).then(
-      (response) => {
-        console.log("this is resposne in handle submit" + response)
-        if(response){
-        console.log("made it herePOPOP")
-        console.log(response);
-        // this.props.navigate('/home');
-        window.location = "/";
-        }
-      else{
-        console.log(response);
-      }},
-      );
-    } catch (error){
-      console.log(error);
-    }
+    const data = {
+      username: this.state.username,
+      password: this.state.password
+  }
+    await axios.post('http://localhost:5000/api/user/login', data).
+      then(response => {
+        console.log(response)
+        this.setState({
+            token: response.data,
+            authFlag: true
+        });
+    })
+    .catch(error => {
+      console.log(error.response)
+        this.setState({
+            message: error.response.data
+        })
+    });
+    //   await auth1Service.login(email, password).then(
+    //   (response) => {
+    //     console.log("this is resposne in handle submit" + response)
+    //     if(response){
+    //     console.log("made it herePOPOP")
+    //     console.log(response);
+    //     // this.props.navigate('/home');
+    //     window.location = "/";
+    //     }
+    //   else{
+    //     console.log(response);
+    //   }},
+    //   );
   }
 
   handleReg(event){
@@ -61,10 +85,24 @@ class Login extends Component {
   }
 
   render() {
+    let redirectVar = null;
+        if (this.state.token.length > 0) {
+            localStorage.setItem("token", this.state.token);
+
+            var decoded = jwt_decode(this.state.token.split(' ')[1]);
+            console.log(decoded)
+            localStorage.setItem("user_id", decoded._id);
+            localStorage.setItem("username", decoded.username);
+            localStorage.setItem("firstName", decoded.firstName);
+            localStorage.setItem("lastName", decoded.lastName);
+            
+            redirectVar = window.location = "/";
+        }
 
     return ( 
       
     <div>
+        {redirectVar}
         <div class="container" style={{width:"40%"}}>
             <br />
         <div>
@@ -73,7 +111,7 @@ class Login extends Component {
         <Form onSubmit={this.handleSubmit}>
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Label>Email address</Form.Label>
-          <Form.Control type="email" placeholder="Enter email" name="email" value={this.state.email} onChange={this.handleChange}  />
+          <Form.Control type="email" placeholder="Enter email" name="username" value={this.state.username} onChange={this.handleChange}  />
           <Form.Text className="text-muted">
             We'll never share your email with anyone else.
           </Form.Text>

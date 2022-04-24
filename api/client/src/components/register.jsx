@@ -16,7 +16,7 @@ class Register extends Component {
     this.state = {
       firstName: "",
       lastName: "",
-      email: "",
+      username: "",
       password: "",
       confirm_password: "",
       loginError: ""
@@ -39,42 +39,25 @@ class Register extends Component {
     event.preventDefault();
 
     console.log("MADE IT HERE :)")
-    const {firstName, lastName, email, password, confirm_password} = this.state; 
+    const {firstName, lastName, username, password, confirm_password} = this.state; 
 
-    const user = {firstName: firstName, lastName: lastName, email: email, password: password}
+    const user = {firstName: firstName, lastName: lastName, username: username, password: password}
 
     // event.preventDefault();
     try {
         console.log(user)
         const response = await register(user);
         console.log(response);
-        auth1Service.loginWithJwt(response.headers["x-auth-token"]);
-        window.location = "/";
+        console.log("this is reposne")
+        // auth1Service.loginWithJwt(response.headers["x-auth-token"]);
+        window.location = "/login";
       } catch (ex) {
-        if (ex.response && ex.response.status === 400) {
-        //   loginError = this.state.errors;
-        //    = ex.response.data;
-        //   this.setState({ errors });
-            console.log(ex.response);
+        if (ex.response && ex.response.status === 500) {
+            console.log(ex.response.data);
+            // let error = ex.response.data;
+
         }
       }
-    // try{
-    //     await authService.signup(email, password, firstName, lastName).then(
-    //     (response) => {
-    //         console.log(response)
-    //       if(response === "Success"){
-    //       console.log("made it herePOPOP")
-    //       console.log(response);
-    //       // this.props.navigate('/home');
-    //       window.location = "/login";
-    //       }
-    //     else{
-    //       console.log(response);
-    //     }},
-    //     );
-    //   } catch (error){
-    //     console.log(error);
-    //   }
   };
 
   render() {
@@ -101,7 +84,7 @@ class Register extends Component {
             <br/>
             <Form.Group className="mb-3" controlId="formBasicEmail">
               <Form.Label>Email address</Form.Label>
-              <Form.Control type="email" placeholder="Enter email" name="email" value={this.state.email} onChange={this.handleChange}  />
+              <Form.Control type="email" placeholder="Enter email" name="username" value={this.state.username} onChange={this.handleChange}  />
               <Form.Text className="text-muted">
                 We'll never share your email with anyone else.
               </Form.Text>
@@ -121,32 +104,6 @@ class Register extends Component {
               Submit
             </Button>
           </Form>
-            {/* <form onSubmit={this.handleSubmit}>
-                <div style={{textAlign:"center"} } class="form-group">
-                    <input type="text" class="form-control" name="firstName" placeholder="First Name" value = {this.state.firstName} onChange={this.handleChange}/>
-                </div>
-                <br/>
-                <div style={{textAlign:"center"} } class="form-group">
-                    <input type="text" class="form-control" name="lastName" placeholder="Last Name" value = {this.state.lastName} onChange={this.handleChange}/>
-                </div>
-                <br/>
-                <div style={{textAlign:"center"} } class="form-group">
-                    <input type="email" class="form-control" name="email" placeholder="Email" value = {this.state.email} onChange={this.handleChange}/>
-                </div>
-                <br/>
-                <div style={{textAlign:"center"}} class="form-group">
-                        <input type="password" class="form-control" name="password" placeholder="Password" value={this.state.password} onChange={this.handleChange}/>
-                </div>
-                <br/>
-                <div style={{textAlign:"center"}} class="form-group">
-                        <input type="password" class="form-control" name="confirm_password" placeholder="Password" value={this.state.confirm_password} onChange={this.handleChange}/>
-                </div>
-                <br/>
-                <div>
-                    <button color="primary" type="submit">Sign In</button>
-                </div> 
-                <br/>
-            </form> */}
         </div>
     </div>
       );

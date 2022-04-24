@@ -1,5 +1,5 @@
 const http = require("../services/httpService");
-const config = require("../config/default.json");
+const config = require("../config/config");
 const dbURL = "https://cmpe-lab1-273.herokuapp.com";
 const dbURL1 = "https://us-cdbr-east-05.cleardb.net";
 const mysql = require("mysql");

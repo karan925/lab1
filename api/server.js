@@ -5,10 +5,21 @@ const mysql = require("mysql");
 const path = require("path");
 const { Http2ServerResponse } = require("http2");
 const multer = require('multer');
-const config = require("./config/default.json");
+const config = require("./config/config");
 
 const user = require("./routes/users");
 const auth = require("./routes/auth");
+const mongoose = require('mongoose');
+const { mongoDB } = require('./config/config');
+
+const Users = require('./models/UserModel');
+const Shops = require('./models/ShopsModel');
+
+var options = {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    maxPoolSize: 500
+};
 
 app.use(cors());
 app.options('*', cors());
@@ -21,6 +32,7 @@ app.use(bodyParser.json());
 app.use("/api/user", user);
 app.use("/api/auth", auth);
 
+
 const httpServer = require("http").createServer(app);
 
 const { createTokens, validateToken } = require("./jwttoken");
@@ -28,6 +40,7 @@ const { createTokens, validateToken } = require("./jwttoken");
 var cookieParser = require('cookie-parser')
 
 app.use(cookieParser())
+
 
 const storage = multer.diskStorage({
   destination: (req, res, cb) => {
@@ -73,42 +86,56 @@ if (process.env.NODE_ENV === "production"){
   })
 }
 
-const pool = mysql.createPool({
-  connectionLimit : 10,
-  host: 'us-cdbr-east-05.cleardb.net',
-  user: 'b16d75e015fe82',
-  password: '4bd269ff',
-  database: 'heroku_719defa3128be15'
+mongoose.connect(mongoDB, options, (err, res) => {
+  if (err) {
+      console.log(err);
+      console.log(`MongoDB Connection Failed`);
+  } else {
+      console.log(`MongoDB Connected`);
+  }
 });
 
-app.post('/register', (req, res) => {
+const passport = require("passport");
+app.use(passport.initialize());
+app.use(passport.session());
+require('./utils/passport')(passport)
 
-  const email = req.body.email;
-  const password = req.body.password;
-  const firstName = req.body.firstName;
-  const lastName = req.body.lastName;
+// const pool = mysql.createPool({
+//   connectionLimit : 10,
+//   host: 'us-cdbr-east-05.cleardb.net',
+//   user: 'b16d75e015fe82',
+//   password: '4bd269ff',
+//   database: 'heroku_719defa3128be15'
+// });
 
-  console.log(email, password, firstName, lastName);
+// app.post('/register', (req, res) => {
 
-  pool.getConnection(function(err, connection) {
-    if (err) throw err; // not connected!
+//   const email = req.body.email;
+//   const password = req.body.password;
+//   const firstName = req.body.firstName;
+//   const lastName = req.body.lastName;
+
+//   console.log(email, password, firstName, lastName);
+
+//   pool.getConnection(function(err, connection) {
+//     if (err) throw err; // not connected!
   
-    // Use the connection
-    connection.query("INSERT INTO login_table (email, password, firstName, lastName) VALUES (?,?,?,?)", [email, password, firstName, lastName], function (error, results, fields) {
-      // When done with the connection, release it.
-      connection.release()
+//     // Use the connection
+//     connection.query("INSERT INTO login_table (email, password, firstName, lastName) VALUES (?,?,?,?)", [email, password, firstName, lastName], function (error, results, fields) {
+//       // When done with the connection, release it.
+//       connection.release()
   
-      // Handle error after the release.
-      if (error){
-        res.status(400).json({ error: error.message });
-      }else{
-      res.status(200).json("Success");
-      res.end();
-      }
-      // Don't use the connection here, it has been returned to the pool.
-    });
-  });
-});
+//       // Handle error after the release.
+//       if (error){
+//         res.status(400).json({ error: error.message });
+//       }else{
+//       res.status(200).json("Success");
+//       res.end();
+//       }
+//       // Don't use the connection here, it has been returned to the pool.
+//     });
+//   });
+// });
 
 
 app.post('/login', (req, res) => {
@@ -323,11 +350,6 @@ app.post('/create_shop', (req, res) => {
     });
   });
 });
-
-
-// app.listen(process.env.PORT || 5000, () => {
-//   console.log('app listening on port ${PORT}');
-// });
 
 const port = process.env.PORT || config.port;
 httpServer.listen(port, () => console.log(`Listning to port ${port}.... `));

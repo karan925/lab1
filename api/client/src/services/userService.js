@@ -11,9 +11,9 @@ const apiEndpoint1 = apiUrl.apiUrl + "/user";
 export function register(user) {
     console.log(apiUrl1.apiUrl1)
     console.log(apiEndpoint);
-    console.log(user.email)
-  return http.post(apiEndpoint + "/register", {
-    email: user.email,
+    console.log(user.username)
+  return http.post(apiEndpoint + '/register', {
+    username: user.username,
     password: user.password,
     firstName: user.firstName,
     lastName: user.lastName

@@ -11,7 +11,7 @@ const user = auth1Service.getCurrentUser();
 let firstName = "";
 if(user){
   firstName = user.firstName.slice(0,1).toUpperCase() + user.firstName.slice(1, user.firstName.length);
-}
+}  
 
 class Home extends Component {
   

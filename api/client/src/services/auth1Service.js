@@ -14,6 +14,8 @@ const apiEndpoint = apiUrl.apiUrl + "/auth";
 
 const apiEndpoint1 = apiUrl1.apiUrl1 + "/auth";
 
+const apiEndpoint2 = apiUrl1.apiUrl1 + "/user";
+
 const tokenKey = "token";
 
 
@@ -32,13 +34,17 @@ export function loginWithJwt(jwt) {
 }
 
 export function logout() {
-  localStorage.removeItem(tokenKey);
+  localStorage.removeItem("token");
+  localStorage.removeItem("firstName");
+  localStorage.removeItem("lastName");
+  localStorage.removeItem("username");
+  localStorage.removeItem("user_id");
 }
 
 export function getCurrentUser() {
   //actual code
   try {
-    const jwt = localStorage.getItem(tokenKey);
+    const jwt = localStorage.getItem("token");
     console.log("JWT: ", jwtDecode(jwt));
     return jwtDecode(jwt);
   } catch (ex) {

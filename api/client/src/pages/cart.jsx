@@ -4,7 +4,10 @@ import { Button, ButtonGroup, ButtonToolbar } from 'react-bootstrap-buttons';
 import 'react-bootstrap-buttons/dist/react-bootstrap-buttons.css';
 import { NavLink, useNavigate } from 'react-router-dom'
 import Axios from "axios"
-import authService from "../services/authService";
+import auth1Service from "../services/auth1Service";
+
+
+const user = auth1Service.getCurrentUser();
 
 class Cart extends Component {
   
@@ -54,6 +57,10 @@ async handleSubmit(event) {
 
   render() {
 
+    if(!user){
+      return window.location = "/";
+    }
+    
     return ( 
       
     <div>
