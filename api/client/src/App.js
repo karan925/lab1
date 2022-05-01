@@ -62,6 +62,7 @@ class App extends Component {
                    <NavDropdown title="Your Account" id="basic-nav-dropdown" >
                     <NavDropdown.Item href="/purchases">Purchases</NavDropdown.Item>
                     <NavDropdown.Item href="/profile">Profile</NavDropdown.Item>
+                    <NavDropdown.Item href="/create_shop">Sell on Etsy</NavDropdown.Item>
                     <NavDropdown.Divider />
                     <NavDropdown.Item href="/logout">Logout</NavDropdown.Item>
                   </NavDropdown>

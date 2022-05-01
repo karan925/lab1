@@ -157,8 +157,8 @@ router.post('/login', async(req, res) => {
   router.post("/update_profile", checkAuth, async (req, res) => {
     console.log(req.body);
     console.log(req.user.username)
-    var profile = {profile : {month: req.body.month, gender: req.body.gender }}
-    await Users.updateOne({ username : req.user.username}, {profile : profile});
+    var profile = {profile : {month: req.body.month, gender: req.body.gender, city: req.body.city, address: req.body.address, state: req.body.state, country: req.body.country, about: req.body.about}}
+    await Users.updateOne({ username : req.user.username}, {firstName: req.body.firstName, lastName: req.body.lastName, profile: profile});
     res.end()
   });
   

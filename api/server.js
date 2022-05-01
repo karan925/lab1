@@ -9,6 +9,7 @@ const config = require("./config/config");
 
 const user = require("./routes/users");
 const auth = require("./routes/auth");
+const shop = require("./routes/shop");
 const mongoose = require('mongoose');
 const { mongoDB } = require('./config/config');
 
@@ -31,7 +32,7 @@ app.use(bodyParser.json());
 
 app.use("/api/user", user);
 app.use("/api/auth", auth);
-
+app.use("/api/shop", shop);
 
 const httpServer = require("http").createServer(app);
 

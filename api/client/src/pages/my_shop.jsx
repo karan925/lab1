@@ -7,7 +7,7 @@ import axios from "axios"
 import authService from "../services/authService";
 import FlashMessage from "react-flash-message";
 
-class CreateShop extends Component {
+class MyShop extends Component {
   
   constructor(props){
     super();
@@ -101,4 +101,4 @@ async handleSubmit(event) {
     } 
 }
 
-export default CreateShop;
+export default MyShop;
