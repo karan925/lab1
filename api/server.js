@@ -16,6 +16,9 @@ const { mongoDB } = require('./config/config');
 const Users = require('./models/UserModel');
 const Shops = require('./models/ShopsModel');
 
+const { graphqlHTTP } = require('express-graphql');
+const schema = require('./schema.js');
+
 var options = {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -33,6 +36,12 @@ app.use(bodyParser.json());
 app.use("/api/user", user);
 app.use("/api/auth", auth);
 app.use("/api/shop", shop);
+
+app.use("/graphql", graphqlHTTP({
+  schema,
+  graphiql: true
+}));
+
 
 const httpServer = require("http").createServer(app);
 
@@ -66,7 +75,7 @@ const { nextTick } = require("process");
 // app.use(cors({origin: 'http://cmpe-lab1-273.herokuapp.com'}));
 
 
-app.use(express.json());
+// app.use(express.json());
 const session = require('express-session');
 app.use(
   session({

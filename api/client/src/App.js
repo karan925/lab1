@@ -17,27 +17,19 @@ import Purchases from './pages/purchases';
 import Footer from './components/NavBar/footer';
 import Logout from './components/logout';
 import {Navbar, NavDropdown, Container, Nav} from 'react-bootstrap'
+// import client from './apollo';
+import {ApolloClient,InMemoryCache,ApolloProvider,HttpLink,from} from '@apollo/client'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-class App extends Component {
-  
-  constructor(props){
-    super();
-    this.state = {
-    };
-
-  }
-
-  render() {
-
-    const user = auth1Service.getCurrentUser();
-
-    if (user) {
-      console.log(user);
-    }
+const client=new ApolloClient({
+  cache:new InMemoryCache(),
+})
+const user = auth1Service.getCurrentUser();
+function App() {
 
     return (
+      <ApolloProvider client={client}>
       <BrowserRouter>
         <Navbar bg="light" expand="lg">
         <Container>
@@ -94,8 +86,8 @@ class App extends Component {
         </Routes>
         {/* <Footer /> */}
       </BrowserRouter>
+      </ApolloProvider>
     );
-  }
-}
+  } 
 
 export default App;
